@@ -1,0 +1,57 @@
+FROM	debian:buster
+RUN	apt-get update && apt-get install -y nginx \
+	vim \
+	curl\
+	wget\
+	mariadb-server \
+	mariadb-client \
+	php-cgi \
+	php-common \
+	php-fpm \
+	php-pear \
+	php-mbstring \
+	php-zip \
+	php-net-socket \
+	php-gd \
+	php-xml-util \
+	php-gettext \
+	php-mysql \
+	php-bcmath \
+	unzip
+RUN	echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN apt-get install -y supervisor
+COPY	./srcs/hello.sh /
+COPY	./srcs/supervisord.conf /etc
+#Install Supervisor and config
+# RUN touch /etc/supervisord.conf
+# RUN echo '[supervisord]'  >> /etc/supervisord.conf
+# RUN echo 'nodaemon=true'  >> /etc/supervisord.conf
+RUN echo '[program:nginx]' >> /etc/supervisord.conf
+RUN echo 'command=nginx'   >> /etc/supervisord.conf
+EXPOSE 80
+# service \
+# RUN	service php7.3-fpm restart
+# RUN	service mysql restart \
+# データベースにはいるmysqlに入るとshellが使えなくなる
+# RUN	mysql -e "create database wpdb;"
+# RUN	mysql -e "CREATE USER 'wpuser'@'localhost' identified by 'dbpassword';"
+# RUN	mysql -e "GRANT ALL PRIVILEGES ON wpdb.* TO 'wpuser'@'localhost';"
+# RUN	mysql -e "FLUSH PRIVILEGES;"
+# RUN	SHOW DATABASES;
+# RUN	EXIT;
+# htmlにwordpressをインストール
+# RUN	chown -R www-data:www-data /var/www/html/wordpress
+RUN	wget https://wordpress.org/latest.tar.gz && tar -xvzf latest.tar.gz && rm latest.tar.gz
+RUN	mv wordpress /var/www/html/
+RUN	mkdir /var/www/html/phpMyAdmin
+RUN	wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+RUN	tar xvf phpMyAdmin-latest-all-languages.tar.gz --strip-components=1 -C /var/www/html/phpMyAdmin && rm phpMyAdmin-latest-all-languages.tar.gz
+# RUN	cd wordpress \
+# 	&& cp wp-config-sample.php wp-config.php
+# COPY	./srcs/wordpress.conf ./etc/nginx/sites-available/localhost
+# cd wordpress
+# wp-config.php
+# CMD nginx -g 'daemon off;'
+# COPY	./srcs/init_docker.sh ./
+# ENTRYPOINT bash init_docker.sh
+CMD /usr/bin/supervisord -c /etc/supervisord.conf
