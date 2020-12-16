@@ -19,7 +19,8 @@ RUN	apt-get update && apt-get install -y nginx \
 	php-bcmath \
 	php-intl \
 	unzip
-RUN	echo "daemon off;" >> /etc/nginx/nginx.conf
+# RUN	echo "daemon off;" >> /etc/nginx/nginx.conf
+# RUN	nginx -g 'daemon off;'
 # RUN apt-get install -y supervisor
 # COPY	./srcs/supervisord.conf /etc/supervisor/conf.d
 EXPOSE 80
