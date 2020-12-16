@@ -19,11 +19,7 @@ RUN	apt-get update && apt-get install -y nginx \
 	php-bcmath \
 	php-intl \
 	unzip
-# RUN	echo "daemon off;" >> /etc/nginx/nginx.conf
-# RUN	nginx -g 'daemon off;'
-# RUN apt-get install -y supervisor
-# COPY	./srcs/supervisord.conf /etc/supervisor/conf.d
+
 EXPOSE 80
-# CMD ["/usr/bin/supervisord"]
 COPY	./srcs/init_docker.sh ./
 CMD /bin/bash init_docker.sh
